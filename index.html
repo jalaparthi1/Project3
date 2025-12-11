@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa's Workshop - Christmas Fifteen Puzzle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div class="snowfall" id="snowfall"></div>
+    
+    <div class="floating-decorations">
+        <span class="decoration" style="--delay: 0s; --x: 10%;"></span>
+        <span class="decoration" style="--delay: 2s; --x: 25%;"></span>
+        <span class="decoration" style="--delay: 4s; --x: 40%;"></span>
+        <span class="decoration" style="--delay: 1s; --x: 55%;"></span>
+        <span class="decoration" style="--delay: 3s; --x: 70%;"></span>
+        <span class="decoration" style="--delay: 5s; --x: 85%;"></span>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon"></span>
+            <span class="brand-text">Santa's Workshop</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
+            <li><a href="#play" class="nav-link" data-page="play">Play</a></li>
+            <li><a href="#leaderboard" class="nav-link" data-page="leaderboard">Leaderboard</a></li>
+            <li><a href="#story" class="nav-link" data-page="story">Story Mode</a></li>
+            <li><a href="#profile" class="nav-link" data-page="profile">Profile</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn btn-settings" id="settingsBtn" title="Settings"></button>
+            <button class="btn btn-sound" id="soundToggle" title="Toggle Sound"></button>
+            <div class="user-menu" id="userMenu">
+                <button class="btn btn-login" id="loginBtn">Login</button>
+            </div>
+        </div>
+        <button class="nav-toggle" id="navToggle"></button>
+    </nav>
+
+    <main class="main-content">
+        <section class="page active" id="homePage">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">Christmas Fifteen Puzzle</h1>
+                    <p class="hero-subtitle">Santa's Workshop Edition</p>
+                    <p class="hero-description">
+                        Experience the magic of Christmas with our adaptive puzzle game! 
+                        Slide tiles to solve festive puzzles, unlock achievements, and climb the leaderboard.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" id="playNowBtn">Play Now</button>
+                        <button class="btn btn-secondary btn-large" id="storyModeBtn">Story Mode</button>
+                    </div>
+                </div>
+                <div class="hero-preview">
+                    <div class="preview-puzzle">
+                        <div class="preview-grid" id="previewGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="features-section">
+                <h2 class="section-title">Magical Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon adaptive-icon"></div>
+                        <h3>Adaptive Difficulty</h3>
+                        <p>Smart system learns your skill level and adjusts challenges in real-time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon puzzle-icon"></div>
+                        <h3>Multiple Sizes</h3>
+                        <p>Choose from 3x3 to 10x10 puzzles for varying challenge levels.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon trophy-icon"></div>
+                        <h3>Leaderboards</h3>
+                        <p>Compete globally and prove you're the ultimate puzzle master!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon gift-icon"></div>
+                        <h3>Rewards & Gifts</h3>
+                        <p>Unlock festive achievements and earn special holiday rewards.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon story-icon"></div>
+                        <h3>Story Mode</h3>
+                        <p>Help Santa save Christmas through an interactive adventure!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon magic-icon"></div>
+                        <h3>Magic Powers</h3>
+                        <p>Use special power-ups to help solve tricky puzzles.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats-section" id="quickStats">
+                <h2 class="section-title">Your Progress</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalGames">0</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="bestTime">--:--</div>
+                        <div class="stat-label">Best Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="achievements">0</div>
+                        <div class="stat-label">Achievements</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">Win Streak</div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="page" id="playPage">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-info">
+                        <div class="info-item">
+                            <span class="info-icon timer-icon"></span>
+                            <span class="info-label">Time</span>
+                            <span class="info-value" id="gameTimer">00:00</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon moves-icon"></span>
+                            <span class="info-label">Moves</span>
+                            <span class="info-value" id="moveCounter">0</span>
+                        </div>
+                        <div class="info-item difficulty-indicator">
+                            <span class="info-icon difficulty-icon"></span>
+                            <span class="info-label">Difficulty</span>
+                            <span class="info-value" id="difficultyLevel">Medium</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-main">
+                    <div class="game-left">
+                        <div class="puzzle-wrapper">
+                            <div class="puzzle-frame">
+                                <div class="puzzle-grid" id="puzzleGrid"></div>
+                            </div>
+                            <div class="puzzle-preview-toggle">
+                                <button class="btn btn-preview" id="previewBtn" title="Show Preview">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-right">
+                        <div class="control-panel">
+                            <h3 class="panel-title">Puzzle Size</h3>
+                            <div class="size-selector">
+                                <button class="size-btn" data-size="3">3x3</button>
+                                <button class="size-btn active" data-size="4">4x4</button>
+                                <button class="size-btn" data-size="6">6x6</button>
+                                <button class="size-btn" data-size="8">8x8</button>
+                                <button class="size-btn" data-size="10">10x10</button>
+                            </div>
+                        </div>
+
+                        <div class="control-panel">
+                            <h3 class="panel-title">Theme</h3>
+                            <div class="theme-selector">
+                                <button class="theme-btn active" data-theme="christmas" title="Christmas Tree"></button>
+                                <button class="theme-btn" data-theme="santa" title="Santa"></button>
+                                <button class="theme-btn" data-theme="snowman" title="Snowman"></button>
+                                <button class="theme-btn" data-theme="reindeer" title="Reindeer"></button>
+                                <button class="theme-btn" data-theme="gifts" title="Gifts"></button>
+                            </div>
+                        </div>
+
+                        <div class="control-panel">
+                            <h3 class="panel-title">Magic Powers</h3>
+                            <div class="powerups-grid">
+                                <button class="powerup-btn" id="hintPower" data-power="hint" title="Show Hint">
+                                    <span class="powerup-icon hint-power-icon"></span>
+                                    <span class="powerup-count" id="hintCount">3</span>
+                                </button>
+                                <button class="powerup-btn" id="freezePower" data-power="freeze" title="Freeze Timer">
+                                    <span class="powerup-icon freeze-power-icon"></span>
+                                    <span class="powerup-count" id="freezeCount">2</span>
+                                </button>
+                                <button class="powerup-btn" id="shufflePower" data-power="shuffle" title="Smart Shuffle">
+                                    <span class="powerup-icon shuffle-power-icon"></span>
+                                    <span class="powerup-count" id="shuffleCount">1</span>
+                                </button>
+                                <button class="powerup-btn" id="undoPower" data-power="undo" title="Undo Move">
+                                    <span class="powerup-icon undo-power-icon"></span>
+                                    <span class="powerup-count" id="undoCount">5</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="control-panel">
+                            <h3 class="panel-title">Controls</h3>
+                            <div class="game-controls">
+                                <button class="btn btn-control" id="newGameBtn">New Game</button>
+                                <button class="btn btn-control" id="resetBtn">Reset</button>
+                                <button class="btn btn-control" id="pauseBtn">Pause</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="leaderboardPage">
+            <div class="leaderboard-container">
+                <h1 class="page-title">Global Leaderboard</h1>
+                
+                <div class="leaderboard-filters">
+                    <div class="filter-group">
+                        <label>Puzzle Size:</label>
+                        <select id="leaderboardSize" class="filter-select">
+                            <option value="all">All Sizes</option>
+                            <option value="3">3x3</option>
+                            <option value="4" selected>4x4</option>
+                            <option value="6">6x6</option>
+                            <option value="8">8x8</option>
+                            <option value="10">10x10</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Sort By:</label>
+                        <select id="leaderboardSort" class="filter-select">
+                            <option value="time">Fastest Time</option>
+                            <option value="moves">Fewest Moves</option>
+                            <option value="score">Highest Score</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="podium">
+                    <div class="podium-place second">
+                        <div class="podium-avatar silver"></div>
+                        <div class="podium-name" id="second-name">---</div>
+                        <div class="podium-score" id="second-score">--:--</div>
+                        <div class="podium-stand">2</div>
+                    </div>
+                    <div class="podium-place first">
+                        <div class="podium-crown"></div>
+                        <div class="podium-avatar gold"></div>
+                        <div class="podium-name" id="first-name">---</div>
+                        <div class="podium-score" id="first-score">--:--</div>
+                        <div class="podium-stand">1</div>
+                    </div>
+                    <div class="podium-place third">
+                        <div class="podium-avatar bronze"></div>
+                        <div class="podium-name" id="third-name">---</div>
+                        <div class="podium-score" id="third-score">--:--</div>
+                        <div class="podium-stand">3</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-table-wrapper">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Time</th>
+                                <th>Moves</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="storyPage">
+            <div class="story-container">
+                <h1 class="page-title">Save Christmas!</h1>
+                
+                <div class="story-intro" id="storyIntro">
+                    <div class="story-scene">
+                        <div class="story-illustration"></div>
+                        <div class="story-text">
+                            <h2>Chapter 1: The Scattered Gifts</h2>
+                            <p>A magical snowstorm has scattered all of Santa's gift list across the North Pole! 
+                            The elves need your help to solve puzzles and piece together the clues to save Christmas!</p>
+                        </div>
+                    </div>
+                    <div class="story-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="storyProgress" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text">0% Complete</span>
+                    </div>
+                </div>
+
+                <div class="chapters-grid">
+                    <div class="chapter-card unlocked" data-chapter="1">
+                        <div class="chapter-icon chapter-1"></div>
+                        <h3>Chapter 1</h3>
+                        <p>The Workshop</p>
+                        <div class="chapter-stars"></div>
+                    </div>
+                    <div class="chapter-card locked" data-chapter="2">
+                        <div class="chapter-icon locked-icon"></div>
+                        <h3>Chapter 2</h3>
+                        <p>Reindeer Stables</p>
+                        <div class="chapter-stars empty"></div>
+                    </div>
+                    <div class="chapter-card locked" data-chapter="3">
+                        <div class="chapter-icon locked-icon"></div>
+                        <h3>Chapter 3</h3>
+                        <p>The Frozen Lake</p>
+                        <div class="chapter-stars empty"></div>
+                    </div>
+                    <div class="chapter-card locked" data-chapter="4">
+                        <div class="chapter-icon locked-icon"></div>
+                        <h3>Chapter 4</h3>
+                        <p>Candy Cane Forest</p>
+                        <div class="chapter-stars empty"></div>
+                    </div>
+                    <div class="chapter-card locked" data-chapter="5">
+                        <div class="chapter-icon locked-icon"></div>
+                        <h3>Chapter 5</h3>
+                        <p>Christmas Eve</p>
+                        <div class="chapter-stars empty"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="profilePage">
+            <div class="profile-container">
+                <h1 class="page-title">Your Profile</h1>
+                
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar"></div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="profileName">Guest Player</h2>
+                        <p class="profile-joined">Playing since: <span id="joinDate">Today</span></p>
+                        <div class="profile-level">
+                            <span class="level-badge">Level <span id="playerLevel">1</span></span>
+                            <div class="level-progress">
+                                <div class="level-bar" id="levelProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="profile-stat">
+                        <div class="stat-icon games-icon"></div>
+                        <div class="stat-value" id="profileGames">0</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="stat-icon wins-icon"></div>
+                        <div class="stat-value" id="profileWins">0</div>
+                        <div class="stat-label">Puzzles Solved</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="stat-icon time-icon"></div>
+                        <div class="stat-value" id="profileBestTime">--:--</div>
+                        <div class="stat-label">Best Time</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="stat-icon total-moves-icon"></div>
+                        <div class="stat-value" id="profileTotalMoves">0</div>
+                        <div class="stat-label">Total Moves</div>
+                    </div>
+                </div>
+
+                <div class="achievements-section">
+                    <h2 class="section-title">Achievements</h2>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <div class="achievement unlocked">
+                            <div class="achievement-icon first-steps"></div>
+                            <div class="achievement-info">
+                                <h4>First Steps</h4>
+                                <p>Complete your first puzzle</p>
+                            </div>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon speed-demon"></div>
+                            <div class="achievement-info">
+                                <h4>Speed Demon</h4>
+                                <p>Solve in under 30 seconds</p>
+                            </div>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon puzzle-master"></div>
+                            <div class="achievement-info">
+                                <h4>Puzzle Master</h4>
+                                <p>Solve 100 puzzles</p>
+                            </div>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon perfect-play"></div>
+                            <div class="achievement-info">
+                                <h4>Perfect Play</h4>
+                                <p>Solve with minimum moves</p>
+                            </div>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon christmas-hero"></div>
+                            <div class="achievement-info">
+                                <h4>Christmas Hero</h4>
+                                <p>Complete all story chapters</p>
+                            </div>
+                        </div>
+                        <div class="achievement locked">
+                            <div class="achievement-icon giant-solver"></div>
+                            <div class="achievement-info">
+                                <h4>Giant Solver</h4>
+                                <p>Complete a 10x10 puzzle</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content settings-modal">
+            <button class="modal-close" id="closeSettings"></button>
+            <h2 class="modal-title">Settings</h2>
+            
+            <div class="settings-group">
+                <h3>Audio</h3>
+                <div class="setting-item">
+                    <label>Background Music</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="musicToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>Sound Effects</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sfxToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>Volume</label>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Gameplay</h3>
+                <div class="setting-item">
+                    <label>Show Timer</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showTimer" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>Highlight Movable Tiles</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="highlightTiles" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>Adaptive Difficulty</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="adaptiveDifficulty" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Visual</h3>
+                <div class="setting-item">
+                    <label>Animation Speed</label>
+                    <select id="animationSpeed" class="setting-select">
+                        <option value="slow">Slow</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="fast">Fast</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>Snowfall Effect</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="snowfallToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content login-modal">
+            <button class="modal-close" id="closeLogin"></button>
+            <h2 class="modal-title">Welcome Back!</h2>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username</label>
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="victoryModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content victory-modal">
+            <div class="victory-celebration">
+                <div class="confetti-container" id="confettiContainer"></div>
+                <div class="victory-icon"></div>
+                <h2 class="victory-title">Congratulations!</h2>
+                <p class="victory-message">You solved the puzzle!</p>
+                
+                <div class="victory-stats">
+                    <div class="victory-stat">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="victoryTime">00:00</span>
+                    </div>
+                    <div class="victory-stat">
+                        <span class="stat-label">Moves</span>
+                        <span class="stat-value" id="victoryMoves">0</span>
+                    </div>
+                    <div class="victory-stat">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="victoryScore">0</span>
+                    </div>
+                </div>
+
+                <div class="victory-stars">
+                    <span class="star" id="star1"></span>
+                    <span class="star" id="star2"></span>
+                    <span class="star" id="star3"></span>
+                </div>
+
+                <div class="victory-buttons">
+                    <button class="btn btn-primary" id="playAgainBtn">Play Again</button>
+                    <button class="btn btn-secondary" id="shareBtn">Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="pauseModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content pause-modal">
+            <h2 class="modal-title">Game Paused</h2>
+            <p>Take a break! Your progress is saved.</p>
+            <div class="pause-buttons">
+                <button class="btn btn-primary" id="resumeBtn">Resume</button>
+                <button class="btn btn-secondary" id="quitGameBtn">Quit to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="previewModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content preview-modal">
+            <button class="modal-close" id="closePreview"></button>
+            <h2 class="modal-title">Puzzle Preview</h2>
+            <div class="preview-image" id="previewImage"></div>
+            <p class="preview-hint">This is how the solved puzzle should look!</p>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/puzzle.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/story.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
