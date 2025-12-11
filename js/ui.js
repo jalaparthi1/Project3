@@ -23,8 +23,16 @@ const UI = {
         });
 
         document.getElementById('playNowBtn')?.addEventListener('click', () => {
+            if (!Auth.isAuthenticated()) {
+                this.showModal('loginModal');
+                return;
+            }
             this.navigateTo('play');
             game.newGame();
+        });
+
+        document.getElementById('loginRequiredBtn')?.addEventListener('click', () => {
+            this.showModal('loginModal');
         });
 
         document.getElementById('storyModeBtn')?.addEventListener('click', () => {
@@ -44,9 +52,18 @@ const UI = {
 
         this.currentPage = page;
 
-        if (page === 'play' && !game.isPlaying) {
-            game.render();
-            game.renderPreview(document.getElementById('previewImage'));
+        // Check authentication for play page
+        if (page === 'play') {
+            if (!Auth.isAuthenticated()) {
+                this.showLoginRequired();
+                return;
+            } else {
+                this.hideLoginRequired();
+                if (!game.isPlaying) {
+                    game.render();
+                    game.renderPreview(document.getElementById('previewImage'));
+                }
+            }
         }
 
         if (page === 'leaderboard') {
@@ -58,6 +75,35 @@ const UI = {
         }
 
         document.querySelector('.nav-links')?.classList.remove('active');
+    },
+
+    showLoginRequired() {
+        const overlay = document.getElementById('loginRequiredOverlay');
+        if (overlay) {
+            overlay.style.display = 'flex';
+        }
+        const gameContainer = document.querySelector('#playPage .game-container');
+        if (gameContainer) {
+            gameContainer.style.opacity = '0.3';
+            gameContainer.style.pointerEvents = 'none';
+        }
+        // Clear puzzle grid
+        const grid = document.getElementById('puzzleGrid');
+        if (grid) {
+            grid.innerHTML = '';
+        }
+    },
+
+    hideLoginRequired() {
+        const overlay = document.getElementById('loginRequiredOverlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+        const gameContainer = document.querySelector('#playPage .game-container');
+        if (gameContainer) {
+            gameContainer.style.opacity = '1';
+            gameContainer.style.pointerEvents = 'auto';
+        }
     },
 
     bindModals() {

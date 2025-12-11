@@ -70,6 +70,11 @@ class Game {
     }
 
     newGame() {
+        if (!Auth.isAuthenticated()) {
+            UI.showToast('Please log in to play', 'error');
+            UI.showModal('loginModal');
+            return;
+        }
         this.puzzle = new FifteenPuzzle(this.size);
         this.puzzle.shuffleWithDifficulty(this.difficulty);
         this.timer = 0;
@@ -126,6 +131,11 @@ class Game {
     }
 
     moveTile(row, col) {
+        if (!Auth.isAuthenticated()) {
+            UI.showToast('Please log in to play', 'error');
+            UI.showModal('loginModal');
+            return false;
+        }
         if (!this.isPlaying || this.isPaused) return false;
         if (typeof row !== 'number' || typeof col !== 'number') return false;
         if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
@@ -426,6 +436,11 @@ class Game {
     }
 
     render() {
+        if (!Auth.isAuthenticated()) {
+            const grid = document.getElementById('puzzleGrid');
+            if (grid) grid.innerHTML = '';
+            return;
+        }
         const grid = document.getElementById('puzzleGrid');
         if (!grid || !this.puzzle) return;
         

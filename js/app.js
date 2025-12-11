@@ -13,8 +13,15 @@ function initializeApp() {
     initKeyboardControls();
     initTouchControls();
     
-    game.render();
-    game.renderPreview(document.getElementById('previewGrid'));
+    // Only render puzzle if user is logged in
+    if (Auth.isAuthenticated()) {
+        game.render();
+        game.renderPreview(document.getElementById('previewGrid'));
+    } else {
+        // Hide puzzle grid if not logged in
+        const grid = document.getElementById('puzzleGrid');
+        if (grid) grid.innerHTML = '';
+    }
 }
 
 function initPreviewGrid() {

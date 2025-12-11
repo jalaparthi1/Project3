@@ -63,6 +63,14 @@ const Auth = {
                 this.updateUI();
                 UI.hideModal('loginModal');
                 UI.showToast(`Welcome back, ${Security.escapeHtml(this.currentUser.username)}!`, 'success');
+                
+                // If on play page, allow access now
+                if (UI.currentPage === 'play') {
+                    UI.hideLoginRequired();
+                    if (!game.isPlaying) {
+                        game.render();
+                    }
+                }
             } else {
                 UI.showToast(response.message || 'Login failed', 'error');
             }
@@ -76,13 +84,21 @@ const Auth = {
         const user = users.find(u => u.email === email);
         
         if (user && user.password === this.hashPassword(password)) {
-            this.currentUser = { ...user, token: Utils.generateId() };
-            delete this.currentUser.password;
-            this.isLoggedIn = true;
-            Utils.storage.set(CONFIG.STORAGE_KEYS.user, this.currentUser);
-            this.updateUI();
-            UI.hideModal('loginModal');
-            UI.showToast(`Welcome back, ${this.currentUser.username}!`, 'success');
+        this.currentUser = { ...user, token: Utils.generateId() };
+        delete this.currentUser.password;
+        this.isLoggedIn = true;
+        Utils.storage.set(CONFIG.STORAGE_KEYS.user, this.currentUser);
+        this.updateUI();
+        UI.hideModal('loginModal');
+        UI.showToast(`Welcome back, ${this.currentUser.username}!`, 'success');
+        
+        // If on play page, allow access now
+        if (UI.currentPage === 'play') {
+            UI.hideLoginRequired();
+            if (!game.isPlaying) {
+                game.render();
+            }
+        }
         } else {
             UI.showToast('Invalid email or password', 'error');
         }
@@ -134,6 +150,14 @@ const Auth = {
                 this.updateUI();
                 UI.hideModal('loginModal');
                 UI.showToast('Account created successfully!', 'success');
+                
+                // If on play page, allow access now
+                if (UI.currentPage === 'play') {
+                    UI.hideLoginRequired();
+                    if (!game.isPlaying) {
+                        game.render();
+                    }
+                }
             } else {
                 UI.showToast(response.message || 'Registration failed', 'error');
             }
@@ -173,12 +197,35 @@ const Auth = {
         this.updateUI();
         UI.hideModal('loginModal');
         UI.showToast('Account created successfully!', 'success');
+        
+        // If on play page, allow access now
+        if (UI.currentPage === 'play') {
+            UI.hideLoginRequired();
+            if (!game.isPlaying) {
+                game.render();
+            }
+        }
     },
 
     logout() {
         this.currentUser = null;
         this.isLoggedIn = false;
         Utils.storage.remove(CONFIG.STORAGE_KEYS.user);
+        
+        // Stop any active game
+        if (game.isPlaying) {
+            game.stopTimer();
+            game.isPlaying = false;
+            game.puzzle = null;
+        }
+        
+        // If on play page, show login required
+        if (UI.currentPage === 'play') {
+            UI.showLoginRequired();
+            const grid = document.getElementById('puzzleGrid');
+            if (grid) grid.innerHTML = '';
+        }
+        
         this.updateUI();
         UI.showToast('Logged out successfully', 'info');
     },
@@ -196,10 +243,18 @@ const Auth = {
                     }
                 };
             }
+            // Hide login required overlay if user is logged in
+            if (UI.currentPage === 'play') {
+                UI.hideLoginRequired();
+            }
         } else {
             if (loginBtn) {
                 loginBtn.textContent = 'Login';
                 loginBtn.onclick = () => UI.showModal('loginModal');
+            }
+            // Show login required overlay if on play page
+            if (UI.currentPage === 'play') {
+                UI.showLoginRequired();
             }
         }
 

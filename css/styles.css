@@ -507,10 +507,77 @@ body::before {
     font-size: 0.9rem;
 }
 
+#playPage {
+    position: relative;
+}
+
 .game-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
+    transition: opacity var(--transition-normal), pointer-events var(--transition-normal);
+}
+
+.login-required-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: var(--border-radius-lg);
+}
+
+.login-required-content {
+    background: var(--card-bg);
+    padding: 3rem;
+    border-radius: var(--border-radius-lg);
+    text-align: center;
+    max-width: 400px;
+    border: 2px solid var(--gold);
+    box-shadow: var(--shadow-glow);
+    animation: fadeIn 0.3s ease;
+}
+
+.login-required-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.login-required-content h2 {
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    font-family: 'Mountains of Christmas', serif;
+}
+
+.login-required-content p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+#loginRequiredBtn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 200px;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .game-header {
