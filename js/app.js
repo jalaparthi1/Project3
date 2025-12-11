@@ -8,6 +8,7 @@ function initializeApp() {
     Auth.init();
     leaderboard.init();
     Story.init();
+    Sprint.init();
     
     initPreviewGrid();
     initKeyboardControls();

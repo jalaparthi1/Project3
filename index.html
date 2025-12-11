@@ -32,6 +32,7 @@
             <li><a href="#play" class="nav-link" data-page="play">Play</a></li>
             <li><a href="#leaderboard" class="nav-link" data-page="leaderboard">Leaderboard</a></li>
             <li><a href="#story" class="nav-link" data-page="story">Story Mode</a></li>
+            <li><a href="#sprint" class="nav-link" data-page="sprint">Sprint Timeline</a></li>
             <li><a href="#profile" class="nav-link" data-page="profile">Profile</a></li>
         </ul>
         <div class="nav-actions">
@@ -437,6 +438,584 @@
                 </div>
             </div>
         </section>
+
+        <section class="page" id="sprintPage">
+            <div class="sprint-container">
+                <div class="sprint-header">
+                    <div class="sprint-title-section">
+                        <h1 class="sprint-main-title">21-Day Christmas Puzzle Sprint Timeline</h1>
+                        <p class="sprint-subtitle">Christmas Fifteen Puzzle Project - Santa's Workshop Edition</p>
+                    </div>
+                    
+                    <div class="sprint-info-box">
+                        <div class="info-icon">📋</div>
+                        <div class="info-content">
+                            <h3>How the 21-Day Christmas Puzzle Sprint Works</h3>
+                            <div class="info-details">
+                                <div class="info-section">
+                                    <h4>🎯 Baseline Structure</h4>
+                                    <p>This timeline provides a structured development path for Santa's Workshop version. Each week builds upon the previous foundation.</p>
+                                    <ul>
+                                        <li><strong>Week 1:</strong> Core foundation & basic mechanics</li>
+                                        <li><strong>Week 2:</strong> Version-specific specialization</li>
+                                        <li><strong>Week 3:</strong> Polish, testing & deployment</li>
+                                    </ul>
+                                </div>
+                                <div class="info-section">
+                                    <h4>🚀 Daily Progress Tracking</h4>
+                                    <p>Track your completion with interactive checkboxes. The progress bars automatically update to show:</p>
+                                    <ul>
+                                        <li><strong>Overall Progress:</strong> Percentage of total tasks completed</li>
+                                        <li><strong>Days Completed:</strong> Full days where all tasks are done</li>
+                                        <li><strong>Features Complete:</strong> Major feature milestones reached</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="pro-tip">💡 <strong>Pro Tip:</strong> Click on any task to mark it complete. Each day is considered "done" when all tasks in that day are checked off!</p>
+                        </div>
+                    </div>
+
+                    <div class="sprint-progress-summary">
+                        <div class="progress-card">
+                            <div class="progress-value" id="overallProgress">0%</div>
+                            <div class="progress-label">Overall Progress</div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-value" id="daysCompleted">0/21</div>
+                            <div class="progress-label">Days Completed</div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-value" id="featuresComplete">0</div>
+                            <div class="progress-label">Features Complete</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sprint-timeline" id="sprintTimeline">
+                    <div class="week-section" data-week="1">
+                        <div class="week-header" data-week-toggle="1">
+                            <div class="week-number">1</div>
+                            <div class="week-info">
+                                <h3>Week 1: Foundation & Core Mechanics</h3>
+                                <p>Days 1-7: Project setup, basic UI, and core puzzle mechanics</p>
+                            </div>
+                            <div class="week-toggle">▼</div>
+                        </div>
+                        <div class="week-content">
+                            <div class="day-section" data-day="1">
+                                <div class="day-header">
+                                    <span class="day-number">Day 1</span>
+                                    <span class="day-title">Project Setup & Basic UI</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="1-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Set up project structure and development environment</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="1-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create basic HTML structure with responsive design</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="1-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement CSS styling with Christmas theme variables</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="2">
+                                <div class="day-header">
+                                    <span class="day-number">Day 2</span>
+                                    <span class="day-title">Basic Puzzle Grid Implementation</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="2-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create 4x4 puzzle grid with numbered tiles</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="2-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement tile movement logic (click functionality)</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="2-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add empty tile detection and movement constraints</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="3">
+                                <div class="day-header">
+                                    <span class="day-number">Day 3</span>
+                                    <span class="day-title">Shuffling & Win Detection</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="3-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement random puzzle shuffling algorithm</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="3-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create win condition detection</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="3-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add celebration animation for completed puzzles</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="4">
+                                <div class="day-header">
+                                    <span class="day-number">Day 4</span>
+                                    <span class="day-title">Timer & Move Counter</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="4-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement game timer with start/pause functionality</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="4-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add move counter to track player efficiency</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="4-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create game status display area</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="5">
+                                <div class="day-header">
+                                    <span class="day-number">Day 5</span>
+                                    <span class="day-title">Enhanced Controls & UI</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="5-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add shuffle, reset, and hint buttons</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="5-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement drag-and-drop functionality for tiles</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="5-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add visual feedback for movable tiles</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="6">
+                                <div class="day-header">
+                                    <span class="day-number">Day 6</span>
+                                    <span class="day-title">Theme Implementation</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="6-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create Santa, Reindeer, and Elf theme variants</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="6-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add theme-specific colors, borders, and styling</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="6-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement theme switching functionality</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="7">
+                                <div class="day-header">
+                                    <span class="day-number">Day 7</span>
+                                    <span class="day-title">Week 1 Review & Polish</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="7-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Test and fix bugs in core functionality</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="7-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Optimize performance and responsiveness</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="7-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Prepare for version-specific feature development</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-section" data-week="2">
+                        <div class="week-header" data-week-toggle="2">
+                            <div class="week-number">2</div>
+                            <div class="week-info">
+                                <h3>Week 2: Version-Specific Features</h3>
+                                <p>Days 8-14: Implementing unique features for Santa's Workshop</p>
+                            </div>
+                            <div class="week-toggle">▼</div>
+                        </div>
+                        <div class="week-content">
+                            <div class="day-section" data-day="8">
+                                <div class="day-header">
+                                    <span class="day-number">Day 8</span>
+                                    <span class="day-title">Database Setup</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="8-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Design database schema for users and game sessions</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="8-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Set up MySQL database using command-line tools</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="8-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create tables for users, leaderboard, and achievements</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="9">
+                                <div class="day-header">
+                                    <span class="day-number">Day 9</span>
+                                    <span class="day-title">User Authentication</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="9-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement user registration and login system</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="9-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add JWT token-based authentication</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="9-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create secure password hashing with bcrypt</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="10">
+                                <div class="day-header">
+                                    <span class="day-number">Day 10</span>
+                                    <span class="day-title">Adaptive Difficulty Algorithm</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="10-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Design algorithm to track player performance</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="10-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement real-time difficulty adjustment</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="10-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add difficulty indicators and feedback</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="11">
+                                <div class="day-header">
+                                    <span class="day-number">Day 11</span>
+                                    <span class="day-title">Multi-Size Puzzles</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="11-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement 3x3, 6x6, 8x8, and 10x10 puzzle sizes</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="11-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add dynamic grid resizing and layout adjustments</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="11-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Optimize tile rendering for different sizes</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="12">
+                                <div class="day-header">
+                                    <span class="day-number">Day 12</span>
+                                    <span class="day-title">Leaderboard System</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="12-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create API endpoints for leaderboard data</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="12-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement filtering by puzzle size and sorting options</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="12-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Design podium display for top 3 players</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="13">
+                                <div class="day-header">
+                                    <span class="day-number">Day 13</span>
+                                    <span class="day-title">Story Mode</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="13-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Design story chapters and progression system</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="13-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement chapter unlocking mechanism</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="13-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add story text and visual elements</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="14">
+                                <div class="day-header">
+                                    <span class="day-number">Day 14</span>
+                                    <span class="day-title">Achievements & Rewards</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="14-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Design achievement system with unlock conditions</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="14-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement achievement tracking and display</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="14-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add reward animations and notifications</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-section" data-week="3">
+                        <div class="week-header" data-week-toggle="3">
+                            <div class="week-number">3</div>
+                            <div class="week-info">
+                                <h3>Week 3: Polish & Deployment</h3>
+                                <p>Days 15-21: Testing, bug fixing, and deployment</p>
+                            </div>
+                            <div class="week-toggle">▼</div>
+                        </div>
+                        <div class="week-content">
+                            <div class="day-section" data-day="15">
+                                <div class="day-header">
+                                    <span class="day-number">Day 15</span>
+                                    <span class="day-title">Audio & Visual Effects</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="15-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add background music and sound effects</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="15-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement audio controls and settings</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="15-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add particle effects and animations</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="16">
+                                <div class="day-header">
+                                    <span class="day-number">Day 16</span>
+                                    <span class="day-title">Power-Ups & Magic Features</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="16-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement hint system with A* solver</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="16-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add freeze timer and undo move powers</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="16-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Create power-up UI and usage tracking</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="17">
+                                <div class="day-header">
+                                    <span class="day-number">Day 17</span>
+                                    <span class="day-title">Security Implementation</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="17-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement XSS prevention and input validation</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="17-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Add SQL injection prevention and rate limiting</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="17-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Test security measures and fix vulnerabilities</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="18">
+                                <div class="day-header">
+                                    <span class="day-number">Day 18</span>
+                                    <span class="day-title">Performance Optimization</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="18-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Optimize database queries and API responses</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="18-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Minimize CSS and JavaScript bundle sizes</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="18-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Implement lazy loading and code splitting</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="19">
+                                <div class="day-header">
+                                    <span class="day-number">Day 19</span>
+                                    <span class="day-title">Responsive Design & Testing</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="19-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Test on multiple devices and screen sizes</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="19-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Fix mobile touch controls and interactions</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="19-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Ensure accessibility standards compliance</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="20">
+                                <div class="day-header">
+                                    <span class="day-number">Day 20</span>
+                                    <span class="day-title">Bug Fixing & Refinement</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="20-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Conduct comprehensive testing and bug hunting</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="20-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Fix identified issues and edge cases</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="20-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Polish UI/UX based on user feedback</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-section" data-day="21">
+                                <div class="day-header">
+                                    <span class="day-number">Day 21</span>
+                                    <span class="day-title">Final Deployment</span>
+                                </div>
+                                <div class="day-tasks">
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="21-1">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Prepare production build and documentation</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="21-2">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Deploy to hosting platform</span>
+                                    </label>
+                                    <label class="task-item">
+                                        <input type="checkbox" data-task="21-3">
+                                        <span class="task-checkmark">✓</span>
+                                        <span class="task-text">Final testing and launch celebration!</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div class="modal" id="settingsModal">
@@ -637,6 +1216,7 @@
     <script src="js/auth.js"></script>
     <script src="js/leaderboard.js"></script>
     <script src="js/story.js"></script>
+    <script src="js/sprint.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
