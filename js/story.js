@@ -92,6 +92,20 @@ const Story = {
                 ],
                 reward: 'New Year Miracle Badge',
                 unlocked: false
+            },
+            {
+                id: 7,
+                name: 'Twelfth Night Finale',
+                description: 'Close out the season with the grand Epiphany celebration.',
+                puzzles: [
+                    { size: 6, difficulty: 'expert', story: 'Kings on the move—clear the path for the procession.' },
+                    { size: 8, difficulty: 'expert', story: 'Lanterns align—light up the village streets.' },
+                    { size: 8, difficulty: 'expert', story: 'Choirs in harmony—arrange the carolers just right.' },
+                    { size: 10, difficulty: 'expert', story: 'Starry tapestry—restore the sky mosaic.' },
+                    { size: 10, difficulty: 'expert', story: 'Twelfth Night feast—set the perfect final table.' }
+                ],
+                reward: 'Epiphany Star Badge',
+                unlocked: false
             }
         ];
     },
@@ -128,7 +142,7 @@ const Story = {
 
     selectChapter(chapterId) {
         const validChapterId = parseInt(chapterId);
-        if (isNaN(validChapterId) || validChapterId < 1 || validChapterId > 6) {
+        if (isNaN(validChapterId) || validChapterId < 1 || validChapterId > 7) {
             UI.showToast('Invalid chapter', 'error');
             return;
         }
