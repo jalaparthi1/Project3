@@ -29,12 +29,22 @@ const Auth = {
     },
 
     async handleLogin() {
-        const email = document.getElementById('loginEmail')?.value;
+        const email = document.getElementById('loginEmail')?.value?.trim();
         const password = document.getElementById('loginPassword')?.value;
         const remember = document.getElementById('rememberMe')?.checked;
 
         if (!email || !password) {
             UI.showToast('Please fill in all fields', 'error');
+            return;
+        }
+
+        if (!Security.validateEmail(email)) {
+            UI.showToast('Invalid email format', 'error');
+            return;
+        }
+
+        if (!Security.validatePassword(password)) {
+            UI.showToast('Invalid password', 'error');
             return;
         }
 
@@ -52,7 +62,7 @@ const Auth = {
                 
                 this.updateUI();
                 UI.hideModal('loginModal');
-                UI.showToast(`Welcome back, ${this.currentUser.username}!`, 'success');
+                UI.showToast(`Welcome back, ${Security.escapeHtml(this.currentUser.username)}!`, 'success');
             } else {
                 UI.showToast(response.message || 'Login failed', 'error');
             }
@@ -79,8 +89,8 @@ const Auth = {
     },
 
     async handleRegister() {
-        const username = document.getElementById('registerUsername')?.value;
-        const email = document.getElementById('registerEmail')?.value;
+        const username = document.getElementById('registerUsername')?.value?.trim();
+        const email = document.getElementById('registerEmail')?.value?.trim();
         const password = document.getElementById('registerPassword')?.value;
         const confirmPassword = document.getElementById('confirmPassword')?.value;
 
@@ -89,13 +99,23 @@ const Auth = {
             return;
         }
 
-        if (password !== confirmPassword) {
-            UI.showToast('Passwords do not match', 'error');
+        if (!Security.validateUsername(username)) {
+            UI.showToast('Username must be 3-20 characters and contain only letters, numbers, underscores, or hyphens', 'error');
             return;
         }
 
-        if (password.length < 6) {
-            UI.showToast('Password must be at least 6 characters', 'error');
+        if (!Security.validateEmail(email)) {
+            UI.showToast('Invalid email format', 'error');
+            return;
+        }
+
+        if (!Security.validatePassword(password)) {
+            UI.showToast('Password must be 6-128 characters', 'error');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            UI.showToast('Passwords do not match', 'error');
             return;
         }
 

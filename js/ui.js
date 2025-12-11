@@ -270,14 +270,24 @@ const UI = {
         const container = document.getElementById('toastContainer');
         if (!container) return;
 
+        const sanitizedMessage = Security.escapeHtml(String(message || ''));
+        const validType = ['success', 'error', 'info', 'warning'].includes(type) ? type : 'info';
+
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
+        toast.className = `toast ${validType}`;
         
         const icons = { success: '✓', error: '✗', info: 'ℹ', warning: '⚠' };
-        toast.innerHTML = `
-            <span class="toast-icon">${icons[type] || icons.info}</span>
-            <span class="toast-message">${message}</span>
-        `;
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'toast-icon';
+        iconSpan.textContent = icons[validType];
+        
+        const messageSpan = document.createElement('span');
+        messageSpan.className = 'toast-message';
+        messageSpan.textContent = sanitizedMessage;
+        
+        toast.appendChild(iconSpan);
+        toast.appendChild(messageSpan);
 
         container.appendChild(toast);
 

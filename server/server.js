@@ -10,8 +10,47 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'christmas-puzzle-secret-key-2024';
 
+const rateLimitMap = new Map();
+
+function rateLimit(req, res, next) {
+    const ip = req.ip || req.connection.remoteAddress;
+    const key = `${req.path}:${ip}`;
+    const now = Date.now();
+    const windowMs = 60000;
+    const maxRequests = 10;
+
+    if (!rateLimitMap.has(key)) {
+        rateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
+        return next();
+    }
+
+    const record = rateLimitMap.get(key);
+    
+    if (now > record.resetTime) {
+        record.count = 1;
+        record.resetTime = now + windowMs;
+        return next();
+    }
+
+    if (record.count >= maxRequests) {
+        return res.status(429).json({ success: false, message: 'Too many requests, please try again later' });
+    }
+
+    record.count++;
+    next();
+}
+
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, value] of rateLimitMap.entries()) {
+        if (now > value.resetTime) {
+            rateLimitMap.delete(key);
+        }
+    }
+}, 60000);
+
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, '..')));
 
 const dbConfig = {
@@ -40,9 +79,13 @@ async function initDatabase() {
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    if (!authHeader || typeof authHeader !== 'string') {
+        req.user = null;
+        return next();
+    }
     
-    if (!token) {
+    const token = authHeader.split(' ')[1];
+    if (!token || token.length > 500) {
         req.user = null;
         return next();
     }
@@ -51,21 +94,40 @@ function authenticateToken(req, res, next) {
         if (err) {
             req.user = null;
         } else {
-            req.user = user;
+            if (user && typeof user.id === 'number' && user.id > 0) {
+                req.user = user;
+            } else {
+                req.user = null;
+            }
         }
         next();
     });
 }
 
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', rateLimit, async (req, res) => {
     const { username, email, password } = req.body;
     
     if (!username || !email || !password) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
     
-    if (password.length < 6) {
-        return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
+    
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 20) {
+        return res.status(400).json({ success: false, message: 'Username must be 3-20 characters' });
+    }
+    
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUsername)) {
+        return res.status(400).json({ success: false, message: 'Username contains invalid characters' });
+    }
+    
+    if (trimmedEmail.length > 100 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+    
+    if (password.length < 6 || password.length > 128) {
+        return res.status(400).json({ success: false, message: 'Password must be 6-128 characters' });
     }
     
     if (!pool) {
@@ -86,7 +148,7 @@ app.post('/api/auth/register', async (req, res) => {
         
         const [result] = await pool.execute(
             'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-            [username, email, passwordHash]
+            [trimmedUsername, trimmedEmail.toLowerCase(), passwordHash]
         );
         
         const userId = result.insertId;
@@ -111,7 +173,7 @@ app.post('/api/auth/register', async (req, res) => {
         
         res.json({
             success: true,
-            user: { id: userId, username, email },
+            user: { id: userId, username: trimmedUsername, email: trimmedEmail.toLowerCase() },
             token
         });
         
@@ -121,11 +183,21 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', rateLimit, async (req, res) => {
     const { email, password } = req.body;
     
     if (!email || !password) {
         return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+    
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    if (trimmedEmail.length > 100 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+    
+    if (password.length > 128) {
+        return res.status(400).json({ success: false, message: 'Invalid password' });
     }
     
     if (!pool) {
@@ -135,7 +207,7 @@ app.post('/api/auth/login', async (req, res) => {
     try {
         const [users] = await pool.execute(
             'SELECT id, username, email, password_hash FROM users WHERE email = ? AND is_active = TRUE',
-            [email]
+            [trimmedEmail]
         );
         
         if (users.length === 0) {
@@ -264,7 +336,7 @@ app.get('/api/leaderboard', async (req, res) => {
                 query += ' ORDER BY time_seconds ASC';
         }
         
-        const limitNum = parseInt(limit) || 100;
+        const limitNum = Math.min(Math.max(parseInt(limit) || 100, 1), 1000);
         query += ` LIMIT ${limitNum}`;
         
         const [entries] = await pool.execute(query, params);
@@ -285,12 +357,25 @@ app.post('/api/leaderboard', authenticateToken, async (req, res) => {
     }
     
     try {
-        const username = req.user?.username || 'Guest';
+        if (!Number.isInteger(time) || time < 0 || time > 86400) {
+            return res.status(400).json({ success: false, message: 'Invalid time value' });
+        }
+        if (!Number.isInteger(moves) || moves < 0 || moves > 100000) {
+            return res.status(400).json({ success: false, message: 'Invalid moves value' });
+        }
+        if (!Number.isInteger(score) || score < 0 || score > 999999) {
+            return res.status(400).json({ success: false, message: 'Invalid score value' });
+        }
+        if (![3, 4, 6, 8, 10].includes(parseInt(size))) {
+            return res.status(400).json({ success: false, message: 'Invalid puzzle size' });
+        }
+        
+        const username = (req.user?.username || 'Guest').substring(0, 50).replace(/[<>'"&]/g, '');
         const userId = req.user?.id || null;
         
         await pool.execute(
             'INSERT INTO leaderboard (user_id, username, puzzle_size, time_seconds, moves, score) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, username, size, time, moves, score]
+            [userId, username, parseInt(size), time, moves, score]
         );
         
         res.json({ success: true });
@@ -332,16 +417,32 @@ app.post('/api/game/complete', authenticateToken, async (req, res) => {
     }
     
     try {
-        if (sessionId) {
+        if (time !== undefined && (!Number.isInteger(time) || time < 0 || time > 86400)) {
+            return res.status(400).json({ success: false, message: 'Invalid time value' });
+        }
+        if (moves !== undefined && (!Number.isInteger(moves) || moves < 0 || moves > 100000)) {
+            return res.status(400).json({ success: false, message: 'Invalid moves value' });
+        }
+        if (score !== undefined && (!Number.isInteger(score) || score < 0 || score > 999999)) {
+            return res.status(400).json({ success: false, message: 'Invalid score value' });
+        }
+        if (size && ![3, 4, 6, 8, 10].includes(parseInt(size))) {
+            return res.status(400).json({ success: false, message: 'Invalid puzzle size' });
+        }
+        if (difficulty && !['easy', 'medium', 'hard', 'expert'].includes(difficulty)) {
+            return res.status(400).json({ success: false, message: 'Invalid difficulty' });
+        }
+        
+        if (sessionId && typeof sessionId === 'string' && sessionId.length <= 100) {
             await pool.execute(
                 'UPDATE game_sessions SET status = ?, moves = ?, time_elapsed = ?, completed_at = NOW() WHERE session_id = ?',
-                [won ? 'completed' : 'abandoned', moves, time, sessionId]
+                [won ? 'completed' : 'abandoned', moves || 0, time || 0, sessionId]
             );
         }
         
-        if (req.user?.id) {
+        if (req.user?.id && time && moves && score && size && difficulty) {
             await pool.execute('CALL sp_record_game_completion(?, ?, ?, ?, ?, ?, ?)', 
-                [req.user.id, size, time, moves, score, difficulty, won]);
+                [req.user.id, parseInt(size), time, moves, score, difficulty, !!won]);
         }
         
         res.json({ success: true });

@@ -50,6 +50,10 @@ class Game {
     }
 
     setSize(size) {
+        if (!Security.validatePuzzleSize(size)) {
+            this.size = CONFIG.DEFAULT_PUZZLE_SIZE;
+            return;
+        }
         this.size = Utils.clamp(size, CONFIG.MIN_PUZZLE_SIZE, CONFIG.MAX_PUZZLE_SIZE);
     }
 
@@ -96,8 +100,8 @@ class Game {
     startTimer() {
         this.stopTimer();
         this.timerInterval = setInterval(() => {
-            if (!this.isPaused && !this.isFrozen) {
-                this.timer++;
+            if (!this.isPaused && !this.isFrozen && this.isPlaying) {
+                this.timer = Math.min(this.timer + 1, 86400);
                 this.updateTimerUI();
             }
         }, 1000);
@@ -123,9 +127,11 @@ class Game {
 
     moveTile(row, col) {
         if (!this.isPlaying || this.isPaused) return false;
+        if (!Security.validatePositiveInteger(row) || !Security.validatePositiveInteger(col)) return false;
+        if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
         
         if (this.puzzle.move(row, col)) {
-            this.moves++;
+            this.moves = Math.min(this.moves + 1, 100000);
             audioManager.createTileSound();
             this.updateMovesUI();
             this.render();
@@ -313,36 +319,54 @@ class Game {
         CONFIG.ACHIEVEMENTS.forEach(achievement => {
             if (unlockedAchievements.includes(achievement.id)) return;
             
-            let unlocked = false;
+            let unlocked = true;
             
-            if (achievement.condition.puzzles && stats.totalWins >= achievement.condition.puzzles) {
-                unlocked = true;
+            if (achievement.condition.puzzles !== undefined) {
+                unlocked = unlocked && stats.totalWins >= achievement.condition.puzzles;
             }
-            if (achievement.condition.time && this.timer <= achievement.condition.time) {
-                unlocked = true;
+            if (achievement.condition.time !== undefined) {
+                unlocked = unlocked && this.timer <= achievement.condition.time;
             }
-            if (achievement.condition.size && this.size >= achievement.condition.size) {
-                unlocked = true;
+            if (achievement.condition.size !== undefined) {
+                unlocked = unlocked && this.size >= achievement.condition.size;
+            }
+            if (achievement.condition.streak !== undefined) {
+                unlocked = unlocked && this.currentStreak >= achievement.condition.streak;
+            }
+            if (achievement.condition.optimal !== undefined && achievement.condition.optimal) {
+                const optimalMoves = this.size * this.size * 10;
+                unlocked = unlocked && this.moves <= optimalMoves;
+            }
+            if (achievement.condition.chapters !== undefined) {
+                const storyProgress = Utils.storage.get('story_progress') || {};
+                const completedChapters = storyProgress.completedChapters || [];
+                unlocked = unlocked && completedChapters.length >= achievement.condition.chapters;
             }
             
             if (unlocked) {
                 unlockedAchievements.push(achievement.id);
                 Utils.storage.set(CONFIG.STORAGE_KEYS.achievements, unlockedAchievements);
-                UI.showToast(`Achievement unlocked: ${achievement.name}!`, 'success');
+                UI.showToast(`Achievement unlocked: ${Security.escapeHtml(achievement.name)}!`, 'success');
             }
         });
     }
 
     saveToLeaderboard(score) {
+        if (!Security.validateTime(this.timer) || !Security.validateMoves(this.moves)) {
+            return;
+        }
+
         const leaderboard = Utils.storage.get(CONFIG.STORAGE_KEYS.leaderboard) || [];
         const user = Utils.storage.get(CONFIG.STORAGE_KEYS.user);
         
+        const sanitizedUsername = user?.username ? Security.escapeHtml(user.username).substring(0, 20) : 'Guest';
+        
         leaderboard.push({
             id: Utils.generateId(),
-            player: user?.username || 'Guest',
+            player: sanitizedUsername,
             time: this.timer,
             moves: this.moves,
-            score,
+            score: Math.max(0, Math.min(score, 999999)),
             size: this.size,
             date: Date.now()
         });
@@ -384,6 +408,10 @@ class Game {
     render() {
         const grid = document.getElementById('puzzleGrid');
         if (!grid || !this.puzzle) return;
+        
+        if (!Security.validatePuzzleSize(this.size)) {
+            this.size = CONFIG.DEFAULT_PUZZLE_SIZE;
+        }
         
         grid.innerHTML = '';
         grid.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;

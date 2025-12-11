@@ -92,7 +92,12 @@ const leaderboard = {
 
         if (data.length === 0) {
             const row = document.createElement('tr');
-            row.innerHTML = '<td colspan="6" style="text-align: center; padding: 2rem;">No records yet. Be the first!</td>';
+            const cell = document.createElement('td');
+            cell.colSpan = 6;
+            cell.style.textAlign = 'center';
+            cell.style.padding = '2rem';
+            cell.textContent = 'No records yet. Be the first!';
+            row.appendChild(cell);
             tbody.appendChild(row);
             return;
         }
@@ -105,14 +110,19 @@ const leaderboard = {
             else if (index === 1) rankDisplay = '🥈';
             else if (index === 2) rankDisplay = '🥉';
 
-            row.innerHTML = `
-                <td>${rankDisplay}</td>
-                <td>${entry.player || 'Anonymous'}</td>
-                <td>${Utils.formatTime(entry.time)}</td>
-                <td>${entry.moves}</td>
-                <td>${entry.score || 0}</td>
-                <td>${Utils.formatDate(entry.date)}</td>
-            `;
+            const rankCell = Security.createElementWithText('td', rankDisplay);
+            const playerCell = Security.createElementWithText('td', Security.escapeHtml(entry.player || 'Anonymous'));
+            const timeCell = Security.createElementWithText('td', Utils.formatTime(entry.time || 0));
+            const movesCell = Security.createElementWithText('td', String(entry.moves || 0));
+            const scoreCell = Security.createElementWithText('td', String(entry.score || 0));
+            const dateCell = Security.createElementWithText('td', Utils.formatDate(entry.date || Date.now()));
+
+            row.appendChild(rankCell);
+            row.appendChild(playerCell);
+            row.appendChild(timeCell);
+            row.appendChild(movesCell);
+            row.appendChild(scoreCell);
+            row.appendChild(dateCell);
 
             tbody.appendChild(row);
         });

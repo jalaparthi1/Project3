@@ -68,8 +68,14 @@ const Utils = {
     storage: {
         get(key, defaultValue = null) {
             try {
+                if (typeof key !== 'string' || key.length > 100) return defaultValue;
                 const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : defaultValue;
+                if (!item) return defaultValue;
+                const parsed = JSON.parse(item);
+                if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 10000) {
+                    return defaultValue;
+                }
+                return parsed;
             } catch {
                 return defaultValue;
             }
@@ -77,10 +83,18 @@ const Utils = {
 
         set(key, value) {
             try {
-                localStorage.setItem(key, JSON.stringify(value));
+                if (typeof key !== 'string' || key.length > 100) return false;
+                const serialized = JSON.stringify(value);
+                if (serialized.length > 10000000) return false;
+                localStorage.setItem(key, serialized);
                 return true;
             } catch {
-                return false;
+                try {
+                    localStorage.clear();
+                    return false;
+                } catch {
+                    return false;
+                }
             }
         },
 

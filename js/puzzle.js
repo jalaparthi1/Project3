@@ -59,7 +59,13 @@ class FifteenPuzzle {
     }
 
     move(row, col) {
+        if (typeof row !== 'number' || typeof col !== 'number') return false;
+        if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
         if (!this.canMove(row, col)) return false;
+        
+        if (this.moveHistory.length > 1000) {
+            this.moveHistory = this.moveHistory.slice(-500);
+        }
         
         const tileValue = this.getTile(row, col);
         
@@ -128,18 +134,32 @@ class FifteenPuzzle {
 
     shuffle(moves = null) {
         moves = moves || CONFIG.DIFFICULTY_LEVELS.medium.shuffleMoves;
+        moves = Math.min(Math.max(parseInt(moves) || 50, 10), 1000);
         
-        for (let i = 0; i < moves; i++) {
-            const movable = this.getMovableTiles();
-            const randomTile = movable[Math.floor(Math.random() * movable.length)];
-            this.move(randomTile.row, randomTile.col);
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        while (attempts < maxAttempts) {
+            this.moveHistory = [];
+            for (let i = 0; i < moves; i++) {
+                const movable = this.getMovableTiles();
+                if (movable.length === 0) break;
+                const randomTile = movable[Math.floor(Math.random() * movable.length)];
+                this.move(randomTile.row, randomTile.col);
+            }
+            
+            if (this.isSolvable() && !this.isSolved()) {
+                this.moveHistory = [];
+                return;
+            }
+            
+            attempts++;
+            if (attempts < maxAttempts) {
+                this.init();
+            }
         }
         
         this.moveHistory = [];
-        
-        if (!this.isSolvable()) {
-            this.shuffle(moves);
-        }
     }
 
     shuffleWithDifficulty(difficulty) {

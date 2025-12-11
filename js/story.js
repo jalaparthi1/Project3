@@ -113,7 +113,13 @@ const Story = {
     },
 
     selectChapter(chapterId) {
-        const chapter = this.chapters.find(c => c.id === chapterId);
+        const validChapterId = parseInt(chapterId);
+        if (isNaN(validChapterId) || validChapterId < 1 || validChapterId > 5) {
+            UI.showToast('Invalid chapter', 'error');
+            return;
+        }
+        
+        const chapter = this.chapters.find(c => c.id === validChapterId);
         
         if (!chapter || !chapter.unlocked) {
             UI.showToast('Complete the previous chapter first!', 'warning');
