@@ -21,7 +21,12 @@ const leaderboard = {
 
     async load() {
         try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}/leaderboard`);
+            const params = new URLSearchParams({
+                size: this.currentFilter.size,
+                sort: this.currentFilter.sort,
+                limit: '100'
+            });
+            const response = await fetch(`${CONFIG.API_BASE_URL}/leaderboard?${params}`);
             if (response.ok) {
                 this.data = await response.json();
             } else {

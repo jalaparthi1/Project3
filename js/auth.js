@@ -224,8 +224,9 @@ const Auth = {
             }
         };
 
-        if (this.currentUser?.token) {
-            options.headers['Authorization'] = `Bearer ${this.currentUser.token}`;
+        const token = this.currentUser?.token;
+        if (token) {
+            options.headers['Authorization'] = `Bearer ${token}`;
         }
 
         if (body) {
@@ -233,6 +234,9 @@ const Auth = {
         }
 
         const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, options);
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
         return response.json();
     },
 

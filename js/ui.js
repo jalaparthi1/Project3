@@ -307,40 +307,42 @@ const UI = {
     updateStatsDisplay() {
         const stats = game.getPlayerStats();
         
-        document.getElementById('totalGames')?.textContent && 
-            (document.getElementById('totalGames').textContent = stats.totalGames);
+        const totalGamesEl = document.getElementById('totalGames');
+        if (totalGamesEl) totalGamesEl.textContent = stats.totalGames;
         
-        document.getElementById('bestTime')?.textContent && 
-            (document.getElementById('bestTime').textContent = 
-                stats.bestTime ? Utils.formatTime(stats.bestTime) : '--:--');
+        const bestTimeEl = document.getElementById('bestTime');
+        if (bestTimeEl) {
+            bestTimeEl.textContent = stats.bestTime ? Utils.formatTime(stats.bestTime) : '--:--';
+        }
         
-        document.getElementById('currentStreak')?.textContent && 
-            (document.getElementById('currentStreak').textContent = stats.currentStreak);
+        const currentStreakEl = document.getElementById('currentStreak');
+        if (currentStreakEl) currentStreakEl.textContent = stats.currentStreak;
         
         const achievements = Utils.storage.get(CONFIG.STORAGE_KEYS.achievements) || [];
-        document.getElementById('achievements')?.textContent && 
-            (document.getElementById('achievements').textContent = achievements.length);
+        const achievementsEl = document.getElementById('achievements');
+        if (achievementsEl) achievementsEl.textContent = achievements.length;
     },
 
     updateProfilePage() {
         const stats = game.getPlayerStats();
         const user = Utils.storage.get(CONFIG.STORAGE_KEYS.user);
 
-        document.getElementById('profileName')?.textContent && 
-            (document.getElementById('profileName').textContent = user?.username || 'Guest Player');
+        const profileNameEl = document.getElementById('profileName');
+        if (profileNameEl) profileNameEl.textContent = user?.username || 'Guest Player';
         
-        document.getElementById('profileGames')?.textContent && 
-            (document.getElementById('profileGames').textContent = stats.totalGames);
+        const profileGamesEl = document.getElementById('profileGames');
+        if (profileGamesEl) profileGamesEl.textContent = stats.totalGames;
         
-        document.getElementById('profileWins')?.textContent && 
-            (document.getElementById('profileWins').textContent = stats.totalWins);
+        const profileWinsEl = document.getElementById('profileWins');
+        if (profileWinsEl) profileWinsEl.textContent = stats.totalWins;
         
-        document.getElementById('profileBestTime')?.textContent && 
-            (document.getElementById('profileBestTime').textContent = 
-                stats.bestTime ? Utils.formatTime(stats.bestTime) : '--:--');
+        const profileBestTimeEl = document.getElementById('profileBestTime');
+        if (profileBestTimeEl) {
+            profileBestTimeEl.textContent = stats.bestTime ? Utils.formatTime(stats.bestTime) : '--:--';
+        }
         
-        document.getElementById('profileTotalMoves')?.textContent && 
-            (document.getElementById('profileTotalMoves').textContent = stats.totalMoves);
+        const profileTotalMovesEl = document.getElementById('profileTotalMoves');
+        if (profileTotalMovesEl) profileTotalMovesEl.textContent = stats.totalMoves;
 
         this.updateAchievementsDisplay();
     },

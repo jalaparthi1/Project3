@@ -137,7 +137,7 @@ app.post('/api/auth/register', rateLimit, async (req, res) => {
     try {
         const [existing] = await pool.execute(
             'SELECT id FROM users WHERE email = ? OR username = ?',
-            [email, username]
+            [trimmedEmail, trimmedUsername]
         );
         
         if (existing.length > 0) {
@@ -394,7 +394,7 @@ app.post('/api/game/start', authenticateToken, async (req, res) => {
     }
     
     try {
-        const sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+        const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
         
         await pool.execute(
             'INSERT INTO game_sessions (user_id, session_id, puzzle_size, difficulty, initial_state, current_state) VALUES (?, ?, ?, ?, ?, ?)',

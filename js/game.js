@@ -127,7 +127,7 @@ class Game {
 
     moveTile(row, col) {
         if (!this.isPlaying || this.isPaused) return false;
-        if (!Security.validatePositiveInteger(row) || !Security.validatePositiveInteger(col)) return false;
+        if (typeof row !== 'number' || typeof col !== 'number') return false;
         if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
         
         if (this.puzzle.move(row, col)) {
@@ -159,6 +159,16 @@ class Game {
         
         this.checkAchievements();
         this.saveToLeaderboard(score);
+        
+        // Also submit to API if available (fire and forget)
+        leaderboard.submitScore({
+            time: this.timer,
+            moves: this.moves,
+            score: score,
+            size: this.size
+        }).catch(() => {
+            // Silently fail if API is unavailable
+        });
         
         audioManager.createVictorySound();
         
@@ -199,6 +209,8 @@ class Game {
         if (!CONFIG.ADAPTIVE_DIFFICULTY.enabled) return;
         
         const recent = this.performanceHistory.slice(-CONFIG.ADAPTIVE_DIFFICULTY.performanceWindow);
+        if (recent.length === 0) return;
+        
         const wins = recent.filter(p => p.won).length;
         const winRate = wins / recent.length;
         
@@ -380,11 +392,19 @@ class Game {
         const allGames = this.performanceHistory;
         const wins = allGames.filter(g => g.won);
         
+        let bestTime = null;
+        if (wins.length > 0) {
+            const times = wins.map(w => w.time).filter(t => typeof t === 'number' && !isNaN(t));
+            if (times.length > 0) {
+                bestTime = Math.min(...times);
+            }
+        }
+        
         return {
             totalGames: allGames.length,
             totalWins: wins.length,
-            bestTime: wins.length > 0 ? Math.min(...wins.map(w => w.time)) : null,
-            totalMoves: allGames.reduce((sum, g) => sum + g.moves, 0),
+            bestTime: bestTime,
+            totalMoves: allGames.reduce((sum, g) => sum + (g.moves || 0), 0),
             currentStreak: this.currentStreak
         };
     }
