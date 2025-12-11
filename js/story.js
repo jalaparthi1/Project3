@@ -78,6 +78,20 @@ const Story = {
                 ],
                 reward: 'Christmas Hero Badge',
                 unlocked: false
+            },
+            {
+                id: 6,
+                name: 'New Year\'s Dawn',
+                description: 'Ring in the New Year by securing every final delivery.',
+                puzzles: [
+                    { size: 6, difficulty: 'expert', story: 'Midnight rush—deliver the remaining gifts!' },
+                    { size: 8, difficulty: 'expert', story: 'Snowstorms rise again, keep the sleigh steady.' },
+                    { size: 8, difficulty: 'expert', story: 'Night sky puzzles—align the stars for the sleigh.' },
+                    { size: 10, difficulty: 'expert', story: 'Final giant drop—only the best elves can finish this.' },
+                    { size: 10, difficulty: 'expert', story: 'The first sunrise—complete the last New Year delivery!' }
+                ],
+                reward: 'New Year Miracle Badge',
+                unlocked: false
             }
         ];
     },
@@ -114,7 +128,7 @@ const Story = {
 
     selectChapter(chapterId) {
         const validChapterId = parseInt(chapterId);
-        if (isNaN(validChapterId) || validChapterId < 1 || validChapterId > 5) {
+        if (isNaN(validChapterId) || validChapterId < 1 || validChapterId > 6) {
             UI.showToast('Invalid chapter', 'error');
             return;
         }
