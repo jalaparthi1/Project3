@@ -29,7 +29,7 @@ const CONFIG = {
         { id: 'speed_demon', name: 'Speed Demon', desc: 'Solve in under 30 seconds', condition: { time: 30 } },
         { id: 'puzzle_master', name: 'Puzzle Master', desc: 'Solve 100 puzzles', condition: { puzzles: 100 } },
         { id: 'perfect_play', name: 'Perfect Play', desc: 'Solve with minimum moves', condition: { optimal: true } },
-        { id: 'christmas_hero', name: 'Christmas Hero', desc: 'Complete all story chapters', condition: { chapters: 5 } },
+        { id: 'christmas_hero', name: 'Christmas Hero', desc: 'Complete all story chapters', condition: { chapters: 7 } },
         { id: 'giant_solver', name: 'Giant Solver', desc: 'Complete a 10x10 puzzle', condition: { size: 10 } }
     ],
     
@@ -46,7 +46,9 @@ const CONFIG = {
         { id: 2, name: 'Reindeer Stables', puzzles: 4, unlocked: false },
         { id: 3, name: 'The Frozen Lake', puzzles: 4, unlocked: false },
         { id: 4, name: 'Candy Cane Forest', puzzles: 5, unlocked: false },
-        { id: 5, name: 'Christmas Eve', puzzles: 5, unlocked: false }
+        { id: 5, name: 'Christmas Eve', puzzles: 5, unlocked: false },
+        { id: 6, name: 'New Year\'s Dawn', puzzles: 5, unlocked: false },
+        { id: 7, name: 'Twelfth Night Finale', puzzles: 5, unlocked: false }
     ],
     
     ADAPTIVE_DIFFICULTY: {
