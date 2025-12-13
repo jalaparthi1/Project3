@@ -6,24 +6,39 @@ class AudioManager {
         this.volume = 0.7;
         this.sounds = {};
         this.musicPlaying = false;
+        this.audioContext = null;
+        this.musicOscillators = [];
+        this.musicGainNode = null;
+        this.musicInterval = null;
         this.init();
     }
 
     init() {
-        this.sounds = {
-            bgMusic: document.getElementById('bgMusic'),
-            tileMove: document.getElementById('tileMoveSound'),
-            victory: document.getElementById('victorySound'),
-            click: document.getElementById('clickSound')
-        };
-
-        Object.values(this.sounds).forEach(sound => {
-            if (sound) {
-                sound.volume = this.volume;
-            }
-        });
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.warn('Web Audio API not supported');
+        }
 
         this.loadSettings();
+        
+        document.addEventListener('click', () => {
+            if (this.audioContext && this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+            if (this.musicEnabled && !this.musicPlaying && this.audioContext) {
+                this.startBackgroundMusic();
+            }
+        }, { once: true });
+        
+        document.addEventListener('keydown', () => {
+            if (this.audioContext && this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+            if (this.musicEnabled && !this.musicPlaying && this.audioContext) {
+                this.startBackgroundMusic();
+            }
+        }, { once: true });
     }
 
     loadSettings() {
@@ -31,7 +46,7 @@ class AudioManager {
         if (settings) {
             this.musicEnabled = settings.music !== false;
             this.sfxEnabled = settings.sfx !== false;
-            this.volume = settings.volume || 0.7;
+            this.volume = settings.volume !== undefined ? settings.volume / 100 : 0.7;
             this.updateVolume();
         }
     }
@@ -40,16 +55,14 @@ class AudioManager {
         const settings = Utils.storage.get(CONFIG.STORAGE_KEYS.settings) || {};
         settings.music = this.musicEnabled;
         settings.sfx = this.sfxEnabled;
-        settings.volume = this.volume;
+        settings.volume = Math.round(this.volume * 100);
         Utils.storage.set(CONFIG.STORAGE_KEYS.settings, settings);
     }
 
     updateVolume() {
-        Object.values(this.sounds).forEach(sound => {
-            if (sound) {
-                sound.volume = this.volume;
-            }
-        });
+        if (this.musicGainNode) {
+            this.musicGainNode.gain.value = this.volume * 0.3;
+        }
     }
 
     setVolume(value) {
@@ -83,26 +96,117 @@ class AudioManager {
         return this.enabled;
     }
 
-    playMusic() {
-        if (!this.musicEnabled || !this.sounds.bgMusic) return;
+    startBackgroundMusic() {
+        if (!this.audioContext || this.musicPlaying || !this.musicEnabled) return;
         
-        this.sounds.bgMusic.play().catch(() => {
-            document.addEventListener('click', () => {
-                if (this.musicEnabled && !this.musicPlaying) {
-                    this.sounds.bgMusic.play().catch(() => {});
-                    this.musicPlaying = true;
+        try {
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+            
+            this.musicGainNode = this.audioContext.createGain();
+            this.musicGainNode.connect(this.audioContext.destination);
+            this.musicGainNode.gain.value = this.volume * 0.3;
+            
+            this.musicPlaying = true;
+            this.playMusicSequence();
+        } catch (e) {
+            console.warn('Could not start background music:', e);
+            this.musicPlaying = false;
+        }
+    }
+
+    playMusicSequence() {
+        if (!this.audioContext || !this.musicEnabled || !this.musicPlaying) return;
+        
+        const notes = [
+            { freq: 523.25, duration: 0.5 },
+            { freq: 659.25, duration: 0.5 },
+            { freq: 783.99, duration: 0.5 },
+            { freq: 1046.50, duration: 0.5 },
+            { freq: 880.00, duration: 0.5 },
+            { freq: 783.99, duration: 0.5 },
+            { freq: 659.25, duration: 0.5 },
+            { freq: 523.25, duration: 1.0 }
+        ];
+        
+        let noteIndex = 0;
+        const playNote = () => {
+            if (!this.musicPlaying || !this.musicEnabled) return;
+            
+            const note = notes[noteIndex];
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(this.musicGainNode);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = note.freq;
+            
+            const now = this.audioContext.currentTime;
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05);
+            gainNode.gain.linearRampToValueAtTime(0.3, now + note.duration - 0.1);
+            gainNode.gain.linearRampToValueAtTime(0, now + note.duration);
+            
+            oscillator.start(now);
+            oscillator.stop(now + note.duration);
+            
+            noteIndex = (noteIndex + 1) % notes.length;
+            
+            this.musicInterval = setTimeout(() => {
+                if (this.musicPlaying && this.musicEnabled) {
+                    playNote();
                 }
-            }, { once: true });
-        });
-        this.musicPlaying = true;
+            }, note.duration * 1000);
+        };
+        
+        playNote();
+    }
+
+    playMusic() {
+        if (!this.musicEnabled) return;
+        if (!this.audioContext) {
+            try {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                return;
+            }
+        }
+        
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        
+        if (!this.musicPlaying) {
+            this.startBackgroundMusic();
+        }
     }
 
     stopMusic() {
-        if (this.sounds.bgMusic) {
-            this.sounds.bgMusic.pause();
-            this.sounds.bgMusic.currentTime = 0;
-        }
         this.musicPlaying = false;
+        
+        if (this.musicInterval) {
+            clearTimeout(this.musicInterval);
+            this.musicInterval = null;
+        }
+        
+        if (this.musicOscillators.length > 0) {
+            this.musicOscillators.forEach(osc => {
+                try {
+                    osc.stop();
+                } catch (e) {}
+            });
+            this.musicOscillators = [];
+        }
+        
+        if (this.musicGainNode) {
+            try {
+                this.musicGainNode.disconnect();
+            } catch (e) {}
+            this.musicGainNode = null;
+        }
     }
 
     playSound(soundName) {
@@ -131,7 +235,11 @@ class AudioManager {
         if (!this.enabled || !this.sfxEnabled) return;
         
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioContext = this.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
@@ -154,7 +262,11 @@ class AudioManager {
         if (!this.enabled || !this.sfxEnabled) return;
         
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const audioContext = this.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
             const notes = [523.25, 659.25, 783.99, 1046.50];
             
             notes.forEach((freq, i) => {
