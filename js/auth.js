@@ -64,7 +64,6 @@ const Auth = {
                 UI.hideModal('loginModal');
                 UI.showToast(`Welcome back, ${Security.escapeHtml(this.currentUser.username)}!`, 'success');
                 
-                // If on play page, allow access now
                 if (UI.currentPage === 'play') {
                     UI.hideLoginRequired();
                     if (!game.isPlaying) {
@@ -92,7 +91,6 @@ const Auth = {
         UI.hideModal('loginModal');
         UI.showToast(`Welcome back, ${this.currentUser.username}!`, 'success');
         
-        // If on play page, allow access now
         if (UI.currentPage === 'play') {
             UI.hideLoginRequired();
             if (!game.isPlaying) {
@@ -151,7 +149,6 @@ const Auth = {
                 UI.hideModal('loginModal');
                 UI.showToast('Account created successfully!', 'success');
                 
-                // If on play page, allow access now
                 if (UI.currentPage === 'play') {
                     UI.hideLoginRequired();
                     if (!game.isPlaying) {
@@ -198,7 +195,6 @@ const Auth = {
         UI.hideModal('loginModal');
         UI.showToast('Account created successfully!', 'success');
         
-        // If on play page, allow access now
         if (UI.currentPage === 'play') {
             UI.hideLoginRequired();
             if (!game.isPlaying) {
@@ -212,14 +208,12 @@ const Auth = {
         this.isLoggedIn = false;
         Utils.storage.remove(CONFIG.STORAGE_KEYS.user);
         
-        // Stop any active game
         if (game.isPlaying) {
             game.stopTimer();
             game.isPlaying = false;
             game.puzzle = null;
         }
         
-        // If on play page, show login required
         if (UI.currentPage === 'play') {
             UI.showLoginRequired();
             const grid = document.getElementById('puzzleGrid');
@@ -243,7 +237,6 @@ const Auth = {
                     }
                 };
             }
-            // Hide login required overlay if user is logged in
             if (UI.currentPage === 'play') {
                 UI.hideLoginRequired();
             }
@@ -252,7 +245,6 @@ const Auth = {
                 loginBtn.textContent = 'Login';
                 loginBtn.onclick = () => UI.showModal('loginModal');
             }
-            // Show login required overlay if on play page
             if (UI.currentPage === 'play') {
                 UI.showLoginRequired();
             }

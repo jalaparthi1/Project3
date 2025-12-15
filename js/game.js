@@ -170,15 +170,12 @@ class Game {
         this.checkAchievements();
         this.saveToLeaderboard(score);
         
-        // Also submit to API if available (fire and forget)
         leaderboard.submitScore({
             time: this.timer,
             moves: this.moves,
             score: score,
             size: this.size
-        }).catch(() => {
-            // Silently fail if API is unavailable
-        });
+        }).catch(() => {});
         
         audioManager.createVictorySound();
         

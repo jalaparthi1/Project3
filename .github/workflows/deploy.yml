@@ -7,10 +7,6 @@ on:
       - master
   workflow_dispatch:
 
-# IMPORTANT: Enable GitHub Pages in Settings → Pages first!
-# Go to: https://github.com/jalaparthi1/Project3/settings/pages
-# Select: Deploy from a branch → main → / (root)
-
 permissions:
   contents: read
   pages: write

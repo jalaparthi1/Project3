@@ -52,7 +52,6 @@ const UI = {
 
         this.currentPage = page;
 
-        // Check authentication for play page
         if (page === 'play') {
             if (!Auth.isAuthenticated()) {
                 this.showLoginRequired();
@@ -87,7 +86,6 @@ const UI = {
             gameContainer.style.opacity = '0.3';
             gameContainer.style.pointerEvents = 'none';
         }
-        // Clear puzzle grid
         const grid = document.getElementById('puzzleGrid');
         if (grid) {
             grid.innerHTML = '';

@@ -1,11 +1,7 @@
--- Christmas Fifteen Puzzle Database Schema
--- Run this script using MySQL command line:
--- mysql -u root -p < schema.sql
 
 CREATE DATABASE IF NOT EXISTS christmas_puzzle;
 USE christmas_puzzle;
 
--- Users table for authentication
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -22,7 +18,6 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- User sessions for token management
 CREATE TABLE IF NOT EXISTS user_sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -37,7 +32,6 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     INDEX idx_expires (expires_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- User preferences and settings
 CREATE TABLE IF NOT EXISTS user_preferences (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -52,7 +46,6 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Game sessions tracking
 CREATE TABLE IF NOT EXISTS game_sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -74,7 +67,6 @@ CREATE TABLE IF NOT EXISTS game_sessions (
     INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Puzzle configurations storage
 CREATE TABLE IF NOT EXISTS puzzle_configurations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     puzzle_size INT NOT NULL,
@@ -85,7 +77,6 @@ CREATE TABLE IF NOT EXISTS puzzle_configurations (
     INDEX idx_size_difficulty (puzzle_size, difficulty_rating)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Leaderboard entries
 CREATE TABLE IF NOT EXISTS leaderboard (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -102,7 +93,6 @@ CREATE TABLE IF NOT EXISTS leaderboard (
     INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Achievements definitions
 CREATE TABLE IF NOT EXISTS achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     achievement_key VARCHAR(50) NOT NULL UNIQUE,
@@ -115,7 +105,6 @@ CREATE TABLE IF NOT EXISTS achievements (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- User achievements (unlocked)
 CREATE TABLE IF NOT EXISTS user_achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -126,7 +115,6 @@ CREATE TABLE IF NOT EXISTS user_achievements (
     UNIQUE KEY unique_user_achievement (user_id, achievement_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Story mode progress
 CREATE TABLE IF NOT EXISTS story_progress (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -140,7 +128,6 @@ CREATE TABLE IF NOT EXISTS story_progress (
     UNIQUE KEY unique_user_chapter_puzzle (user_id, chapter_id, puzzle_index)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Player statistics
 CREATE TABLE IF NOT EXISTS player_statistics (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -159,7 +146,6 @@ CREATE TABLE IF NOT EXISTS player_statistics (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Performance history for adaptive difficulty
 CREATE TABLE IF NOT EXISTS performance_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -173,7 +159,6 @@ CREATE TABLE IF NOT EXISTS performance_history (
     INDEX idx_user_recent (user_id, recorded_at DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Analytics events
 CREATE TABLE IF NOT EXISTS analytics_events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -186,7 +171,6 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert default achievements
 INSERT INTO achievements (achievement_key, name, description, condition_type, condition_value) VALUES
 ('first_steps', 'First Steps', 'Complete your first puzzle', 'puzzles', 1),
 ('speed_demon', 'Speed Demon', 'Solve a puzzle in under 30 seconds', 'time', 30),
@@ -200,7 +184,6 @@ INSERT INTO achievements (achievement_key, name, description, condition_type, co
 ('early_bird', 'Early Bird', 'Play a game before 6 AM', 'special', 2)
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 
--- Create views for common queries
 CREATE OR REPLACE VIEW v_top_players AS
 SELECT 
     u.id,
@@ -227,7 +210,6 @@ WHERE puzzle_size = 4
 ORDER BY time_seconds ASC
 LIMIT 100;
 
--- Stored procedure to record game completion
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS sp_record_game_completion(
     IN p_user_id INT,
@@ -275,7 +257,4 @@ BEGIN
 END //
 DELIMITER ;
 
--- Grant privileges (adjust user/host as needed)
--- GRANT ALL PRIVILEGES ON christmas_puzzle.* TO 'puzzle_user'@'localhost' IDENTIFIED BY 'secure_password';
--- FLUSH PRIVILEGES;
 

@@ -49,7 +49,6 @@ setInterval(() => {
     }
 }, 60000);
 
-// CORS configuration - Allow GitHub Pages and localhost
 app.use(cors({
     origin: [
         'http://localhost:3000',

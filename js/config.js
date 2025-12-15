@@ -1,14 +1,9 @@
-// Detect if running on GitHub Pages
 const isGitHubPages = window.location.hostname.includes('github.io') || 
                       window.location.hostname.includes('github.com');
 const isLocalhost = window.location.hostname === 'localhost' || 
                    window.location.hostname === '127.0.0.1';
 
-// Set API URL based on environment
-// For GitHub Pages: Use your backend API URL (e.g., Render, Railway, Heroku)
-// For localhost: Use '/api' (relative path to local server)
-// Update the GITHUB_PAGES_API_URL with your actual backend URL
-const GITHUB_PAGES_API_URL = 'https://your-backend-app.onrender.com/api'; // UPDATE THIS with your backend URL
+const GITHUB_PAGES_API_URL = 'https://your-backend-app.onrender.com/api';
 
 const CONFIG = {
     API_BASE_URL: isGitHubPages ? GITHUB_PAGES_API_URL : '/api',
