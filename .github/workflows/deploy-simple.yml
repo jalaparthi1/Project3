@@ -1,0 +1,35 @@
+# Alternative: Simple static file deployment
+# This workflow works even if GitHub Actions Pages isn't fully configured
+# But you still need to enable Pages in Settings → Pages
+
+name: Simple GitHub Pages Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          exclude_assets: |
+            node_modules
+            server
+            database
+            .env
+            .git
+            venv
+            *.log
+            .DS_Store
+

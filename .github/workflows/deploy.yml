@@ -7,6 +7,10 @@ on:
       - master
   workflow_dispatch:
 
+# IMPORTANT: Enable GitHub Pages in Settings → Pages first!
+# Go to: https://github.com/jalaparthi1/Project3/settings/pages
+# Select: Deploy from a branch → main → / (root)
+
 permissions:
   contents: read
   pages: write
@@ -17,11 +21,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-deploy:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,8 +35,28 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+          exclude-paths: |
+            node_modules/
+            server/
+            database/
+            .env
+            .git/
+            venv/
+            *.log
+            .DS_Store
+            package-lock.json
+            package.json
+            README.md
+            GITHUB_PAGES_SETUP.md
+            GITHUB_PAGES_ENABLE.md
+            DEVELOPMENT_JOURNAL.md
+            Project_Proposal.pdf
+            Project3.pptx
+            .github/
       
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
