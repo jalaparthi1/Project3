@@ -72,6 +72,37 @@ npm start
 ### 6. Access the Application
 Open http://localhost:3000 in your browser
 
+## GitHub Pages Deployment
+
+This project can be deployed to GitHub Pages with full functionality. Since GitHub Pages only serves static files, the backend needs to be hosted separately.
+
+### Quick Setup
+
+1. **Deploy Backend** to a free hosting service (Render, Railway, or Heroku)
+   - See `GITHUB_PAGES_SETUP.md` for detailed instructions
+   - Copy your backend URL (e.g., `https://your-app.onrender.com`)
+
+2. **Update API URL** in `js/config.js`:
+   ```javascript
+   const GITHUB_PAGES_API_URL = 'https://your-backend-url.onrender.com/api';
+   ```
+
+3. **Enable GitHub Pages**:
+   - Go to repository Settings → Pages
+   - Select branch: `main` and folder: `/ (root)`
+   - Your site will be at: `https://yourusername.github.io/Project3/`
+
+4. **Configure Backend CORS**:
+   - The server already includes CORS configuration for GitHub Pages
+   - Make sure your backend environment variables are set correctly
+
+### Full Documentation
+See [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md) for complete deployment guide including:
+- Backend deployment to Render/Railway/Heroku
+- Database setup
+- Environment variables
+- Troubleshooting
+
 ## Project Structure
 ```
 Project3/
