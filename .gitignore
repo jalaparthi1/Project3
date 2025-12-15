@@ -15,4 +15,10 @@ dist/
 build/
 coverage/
 .nyc_output/
+venv/
+.venv/
+*.py
+GITHUB_PAGES*.md
+# Keep DEVELOPMENT_JOURNAL.md visible
+!DEVELOPMENT_JOURNAL.md
 

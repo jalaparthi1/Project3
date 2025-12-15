@@ -72,36 +72,25 @@ npm start
 ### 6. Access the Application
 Open http://localhost:3000 in your browser
 
-## GitHub Pages Deployment
+## Live Demo
 
-This project can be deployed to GitHub Pages with full functionality. Since GitHub Pages only serves static files, the backend needs to be hosted separately.
+🌐 **GitHub Pages**: [https://jalaparthi1.github.io/Project3/](https://jalaparthi1.github.io/Project3/)
 
-### Quick Setup
+### ⚠️ Important Disclaimer
 
-1. **Deploy Backend** to a free hosting service (Render, Railway, or Heroku)
-   - See `GITHUB_PAGES_SETUP.md` for detailed instructions
-   - Copy your backend URL (e.g., `https://your-app.onrender.com`)
+**GitHub Pages Limitations:**
+- GitHub Pages only serves **static files** (HTML, CSS, JavaScript)
+- **Database and backend functionality require separate deployment**
+- The live demo works with **localStorage** for offline functionality
+- For full functionality (authentication, database, leaderboard), you need to:
+  1. Deploy the backend API to a hosting service (Render, Railway, Heroku, etc.)
+  2. Update the API URL in `js/config.js`
+  3. Set up a MySQL database on a hosting provider
 
-2. **Update API URL** in `js/config.js`:
-   ```javascript
-   const GITHUB_PAGES_API_URL = 'https://your-backend-url.onrender.com/api';
-   ```
-
-3. **Enable GitHub Pages**:
-   - Go to repository Settings → Pages
-   - Select branch: `main` and folder: `/ (root)`
-   - Your site will be at: `https://yourusername.github.io/Project3/`
-
-4. **Configure Backend CORS**:
-   - The server already includes CORS configuration for GitHub Pages
-   - Make sure your backend environment variables are set correctly
-
-### Full Documentation
-See [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md) for complete deployment guide including:
-- Backend deployment to Render/Railway/Heroku
-- Database setup
-- Environment variables
-- Troubleshooting
+**Current Status:**
+- ✅ Frontend is fully functional on GitHub Pages
+- ✅ Game mechanics work (puzzle solving, story mode, local progress)
+- ⚠️ Backend features (user accounts, global leaderboard, database) require separate backend deployment
 
 ## Project Structure
 ```
