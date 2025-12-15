@@ -22,6 +22,9 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
@@ -47,9 +50,6 @@ jobs:
             package-lock.json
             package.json
             README.md
-            GITHUB_PAGES_SETUP.md
-            GITHUB_PAGES_ENABLE.md
-            DEVELOPMENT_JOURNAL.md
             Project_Proposal.pdf
             Project3.pptx
             .github/
