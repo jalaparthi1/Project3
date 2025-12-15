@@ -74,7 +74,7 @@ Open http://localhost:3000 in your browser
 
 ## Live Demo
 
-🌐 **GitHub Pages**: [https://jalaparthi1.github.io/Project3/](https://jalaparthi1.github.io/Project3/)
+ **GitHub Pages**: [https://jalaparthi1.github.io/Project3/](https://jalaparthi1.github.io/Project3/)
 
 ### ⚠️ Important Disclaimer
 
@@ -88,9 +88,9 @@ Open http://localhost:3000 in your browser
   3. Set up a MySQL database on a hosting provider
 
 **Current Status:**
-- ✅ Frontend is fully functional on GitHub Pages
-- ✅ Game mechanics work (puzzle solving, story mode, local progress)
-- ⚠️ Backend features (user accounts, global leaderboard, database) require separate backend deployment
+- Frontend is fully functional on GitHub Pages
+- Game mechanics work (puzzle solving, story mode, local progress)
+- Backend features (user accounts, global leaderboard, database) require separate backend deployment
 
 ## Project Structure
 ```
