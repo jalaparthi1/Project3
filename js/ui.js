@@ -4,6 +4,7 @@ const UI = {
     init() {
         this.bindNavigation();
         this.bindModals();
+        this.loadSettings();
         this.bindSettings();
         this.initSnowfall();
         this.updateStatsDisplay();
@@ -173,11 +174,18 @@ const UI = {
 
     bindSettings() {
         document.getElementById('musicToggle')?.addEventListener('change', (e) => {
-            audioManager.toggleMusic();
+            audioManager.musicEnabled = e.target.checked;
+            if (e.target.checked) {
+                audioManager.playMusic();
+            } else {
+                audioManager.stopMusic();
+            }
+            audioManager.saveSettings();
         });
 
         document.getElementById('sfxToggle')?.addEventListener('change', (e) => {
-            audioManager.toggleSfx();
+            audioManager.sfxEnabled = e.target.checked;
+            audioManager.saveSettings();
         });
 
         document.getElementById('volumeSlider')?.addEventListener('input', (e) => {
@@ -270,14 +278,22 @@ const UI = {
         if (settings.music !== undefined) {
             const toggle = document.getElementById('musicToggle');
             if (toggle) toggle.checked = settings.music;
+            audioManager.musicEnabled = settings.music;
+            if (settings.music && !audioManager.musicPlaying) {
+                audioManager.playMusic();
+            } else if (!settings.music && audioManager.musicPlaying) {
+                audioManager.stopMusic();
+            }
         }
         if (settings.sfx !== undefined) {
             const toggle = document.getElementById('sfxToggle');
             if (toggle) toggle.checked = settings.sfx;
+            audioManager.sfxEnabled = settings.sfx;
         }
         if (settings.volume !== undefined) {
             const slider = document.getElementById('volumeSlider');
             if (slider) slider.value = settings.volume;
+            audioManager.setVolume(settings.volume);
         }
         if (settings.highlightTiles !== undefined) {
             const toggle = document.getElementById('highlightTiles');

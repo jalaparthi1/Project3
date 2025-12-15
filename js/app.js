@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeApp() {
     UI.init();
-    UI.loadSettings();
     Auth.init();
     leaderboard.init();
     Story.init();

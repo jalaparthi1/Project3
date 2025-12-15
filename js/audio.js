@@ -48,7 +48,18 @@ class AudioManager {
             this.sfxEnabled = settings.sfx !== false;
             this.volume = settings.volume !== undefined ? settings.volume / 100 : 0.7;
             this.updateVolume();
+            this.updateUI();
         }
+    }
+
+    updateUI() {
+        const musicToggle = document.getElementById('musicToggle');
+        const sfxToggle = document.getElementById('sfxToggle');
+        const volumeSlider = document.getElementById('volumeSlider');
+        
+        if (musicToggle) musicToggle.checked = this.musicEnabled;
+        if (sfxToggle) sfxToggle.checked = this.sfxEnabled;
+        if (volumeSlider) volumeSlider.value = Math.round(this.volume * 100);
     }
 
     saveSettings() {
